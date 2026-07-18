@@ -8,11 +8,11 @@ class IsometricBoard {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         
-        // Isometric projection parameters
-        this.tileWidth = 60;
-        this.tileHeight = 30;
+        // Improved isometric projection parameters
+        this.tileWidth = 50;
+        this.tileHeight = 25;
         this.boardOriginX = canvas.width / 2;
-        this.boardOriginY = canvas.height / 2 - 60;
+        this.boardOriginY = canvas.height / 2 + 40;
         
         this.selectedSquare = null;
         this.validMoves = [];
@@ -28,7 +28,7 @@ class IsometricBoard {
      * @returns {Object} { x, y } screen coordinates
      */
     boardToScreen(row, col) {
-        // Isometric projection formula
+        // Improved isometric projection formula
         const x = (col - row) * (this.tileWidth / 2);
         const y = (col + row) * (this.tileHeight / 2);
         
@@ -89,12 +89,15 @@ class IsometricBoard {
      * Draw the complete board
      */
     draw(board) {
-        // Clear canvas
-        this.ctx.fillStyle = '#f5f7fa';
+        // Clear canvas with gradient background
+        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+        gradient.addColorStop(0, '#f5f7fa');
+        gradient.addColorStop(1, '#e8eef5');
+        this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw board squares
-        for (let row = 0; row < 8; row++) {
+        // Draw board squares (back to front for proper layering)
+        for (let row = 7; row >= 0; row--) {
             for (let col = 0; col < 8; col++) {
                 this.drawSquare(row, col, board);
             }
@@ -105,8 +108,8 @@ class IsometricBoard {
             this.drawValidMoves();
         }
         
-        // Draw pieces
-        for (let row = 0; row < 8; row++) {
+        // Draw pieces (back to front)
+        for (let row = 7; row >= 0; row--) {
             for (let col = 0; col < 8; col++) {
                 if (board[row][col]) {
                     this.drawPiece(board[row][col], row, col);
@@ -126,7 +129,7 @@ class IsometricBoard {
     }
 
     /**
-     * Draw a single square
+     * Draw a single square with 3D effect
      */
     drawSquare(row, col, board) {
         const points = this.getSquarePoints(row, col);
@@ -136,13 +139,15 @@ class IsometricBoard {
         const isLastMove = (this.lastMovedFrom && this.lastMovedFrom.row === row && this.lastMovedFrom.col === col) ||
                           (this.lastMovedTo && this.lastMovedTo.row === row && this.lastMovedTo.col === col);
         
+        let fillColor;
         if (isLastMove) {
-            this.ctx.fillStyle = '#f4d03f';
+            fillColor = '#f4d03f';
         } else {
-            this.ctx.fillStyle = isLight ? '#f5e6d3' : '#d4a574';
+            fillColor = isLight ? '#f5e6d3' : '#d4a574';
         }
         
-        // Draw square
+        // Draw top face
+        this.ctx.fillStyle = fillColor;
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
         this.ctx.lineTo(points[1].x, points[1].y);
@@ -151,58 +156,83 @@ class IsometricBoard {
         this.ctx.closePath();
         this.ctx.fill();
         
-        // Draw border
-        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-        this.ctx.lineWidth = 1;
+        // Draw borders
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+        
+        // Add subtle 3D shading on edges
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        this.ctx.lineWidth = 0.5;
+        this.ctx.beginPath();
+        this.ctx.moveTo(points[0].x, points[0].y);
+        this.ctx.lineTo(points[1].x, points[1].y);
+        this.ctx.stroke();
+        
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.beginPath();
+        this.ctx.moveTo(points[2].x, points[2].y);
+        this.ctx.lineTo(points[3].x, points[3].y);
         this.ctx.stroke();
     }
 
     /**
-     * Draw a chess piece
+     * Draw a chess piece with improved rendering
      */
     drawPiece(piece, row, col) {
         const center = this.getSquareCenter(row, col);
         const symbol = piece.getSymbol();
         
-        // Draw shadow
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-        this.ctx.font = 'bold 32px Arial';
+        // Draw shadow for depth
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.font = 'bold 36px Arial Unicode MS, Arial';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(symbol, center.x + 2, center.y + 6);
+        this.ctx.fillText(symbol, center.x + 1.5, center.y + 4);
         
         // Draw piece
-        this.ctx.fillStyle = '#333';
-        this.ctx.fillText(symbol, center.x, center.y + 2);
+        this.ctx.fillStyle = piece.color === 'white' ? '#f0f0f0' : '#1a1a1a';
+        this.ctx.strokeStyle = piece.color === 'white' ? '#333' : '#fff';
+        this.ctx.lineWidth = 1;
+        this.ctx.fillText(symbol, center.x, center.y);
+        
+        // Add outline for contrast
+        this.ctx.strokeText(symbol, center.x, center.y);
     }
 
     /**
-     * Draw valid moves
+     * Draw valid moves with improved styling
      */
     drawValidMoves() {
         this.validMoves.forEach(move => {
             const center = this.getSquareCenter(move.row, move.col);
             
-            // Draw circle for empty squares, ring for captures
-            this.ctx.fillStyle = 'rgba(52, 152, 219, 0.4)';
+            // Larger, more visible move indicators
+            this.ctx.fillStyle = 'rgba(52, 152, 219, 0.5)';
             this.ctx.beginPath();
-            this.ctx.arc(center.x, center.y, 8, 0, Math.PI * 2);
+            this.ctx.arc(center.x, center.y, 12, 0, Math.PI * 2);
             this.ctx.fill();
             
-            this.ctx.strokeStyle = 'rgba(52, 152, 219, 0.8)';
-            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = 'rgba(52, 152, 219, 0.9)';
+            this.ctx.lineWidth = 2.5;
             this.ctx.stroke();
         });
     }
 
     /**
-     * Draw selection highlight
+     * Draw selection highlight with glow effect
      */
     drawSelectionHighlight(row, col) {
         const points = this.getSquarePoints(row, col);
         
+        // Glow effect
+        this.ctx.shadowColor = '#3498db';
+        this.ctx.shadowBlur = 15;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
+        
         this.ctx.strokeStyle = '#3498db';
-        this.ctx.lineWidth = 3;
+        this.ctx.lineWidth = 3.5;
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
         this.ctx.lineTo(points[1].x, points[1].y);
@@ -211,9 +241,8 @@ class IsometricBoard {
         this.ctx.closePath();
         this.ctx.stroke();
         
-        // Draw glow effect
-        this.ctx.shadowColor = '#3498db';
-        this.ctx.shadowBlur = 10;
+        // Reset shadow
+        this.ctx.shadowColor = 'transparent';
     }
 
     /**
@@ -222,7 +251,7 @@ class IsometricBoard {
     drawHoverHighlight(row, col) {
         const points = this.getSquarePoints(row, col);
         
-        this.ctx.fillStyle = 'rgba(52, 152, 219, 0.1)';
+        this.ctx.fillStyle = 'rgba(52, 152, 219, 0.15)';
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
         this.ctx.lineTo(points[1].x, points[1].y);
@@ -270,15 +299,18 @@ class IsometricBoard {
     }
 
     /**
-     * Resize canvas to fit container
+     * Resize canvas to fit container properly
      */
     resize() {
         const rect = this.canvas.parentElement.getBoundingClientRect();
-        this.canvas.width = Math.min(600, rect.width - 40);
-        this.canvas.height = Math.min(600, rect.height - 40);
+        const maxWidth = Math.min(700, rect.width - 30);
+        const maxHeight = Math.min(700, rect.height - 30);
+        
+        this.canvas.width = maxWidth;
+        this.canvas.height = maxHeight;
         
         this.boardOriginX = this.canvas.width / 2;
-        this.boardOriginY = this.canvas.height / 2 - 60;
+        this.boardOriginY = this.canvas.height / 2 + 40;
     }
 
     /**
