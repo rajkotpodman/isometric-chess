@@ -8,11 +8,11 @@ class IsometricBoard {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         
-        // Improved isometric projection parameters
-        this.tileWidth = 50;
-        this.tileHeight = 25;
+        // Larger isometric projection parameters
+        this.tileWidth = 70;
+        this.tileHeight = 35;
         this.boardOriginX = canvas.width / 2;
-        this.boardOriginY = canvas.height / 2 + 40;
+        this.boardOriginY = canvas.height / 2 + 60;
         
         this.selectedSquare = null;
         this.validMoves = [];
@@ -157,19 +157,19 @@ class IsometricBoard {
         this.ctx.fill();
         
         // Draw borders
-        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
-        this.ctx.lineWidth = 1.5;
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.lineWidth = 2;
         this.ctx.stroke();
         
         // Add subtle 3D shading on edges
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-        this.ctx.lineWidth = 0.5;
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        this.ctx.lineWidth = 1;
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
         this.ctx.lineTo(points[1].x, points[1].y);
         this.ctx.stroke();
         
-        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
         this.ctx.beginPath();
         this.ctx.moveTo(points[2].x, points[2].y);
         this.ctx.lineTo(points[3].x, points[3].y);
@@ -184,20 +184,18 @@ class IsometricBoard {
         const symbol = piece.getSymbol();
         
         // Draw shadow for depth
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        this.ctx.font = 'bold 36px Arial Unicode MS, Arial';
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+        this.ctx.font = 'bold 52px Arial Unicode MS, Arial';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(symbol, center.x + 1.5, center.y + 4);
+        this.ctx.fillText(symbol, center.x + 2, center.y + 6);
         
-        // Draw piece
-        this.ctx.fillStyle = piece.color === 'white' ? '#f0f0f0' : '#1a1a1a';
+        // Draw piece with better contrast
+        this.ctx.fillStyle = piece.color === 'white' ? '#f5f5f5' : '#0a0a0a';
         this.ctx.strokeStyle = piece.color === 'white' ? '#333' : '#fff';
-        this.ctx.lineWidth = 1;
-        this.ctx.fillText(symbol, center.x, center.y);
-        
-        // Add outline for contrast
-        this.ctx.strokeText(symbol, center.x, center.y);
+        this.ctx.lineWidth = 1.5;
+        this.ctx.fillText(symbol, center.x, center.y + 2);
+        this.ctx.strokeText(symbol, center.x, center.y + 2);
     }
 
     /**
@@ -208,13 +206,13 @@ class IsometricBoard {
             const center = this.getSquareCenter(move.row, move.col);
             
             // Larger, more visible move indicators
-            this.ctx.fillStyle = 'rgba(52, 152, 219, 0.5)';
+            this.ctx.fillStyle = 'rgba(52, 152, 219, 0.6)';
             this.ctx.beginPath();
-            this.ctx.arc(center.x, center.y, 12, 0, Math.PI * 2);
+            this.ctx.arc(center.x, center.y, 16, 0, Math.PI * 2);
             this.ctx.fill();
             
-            this.ctx.strokeStyle = 'rgba(52, 152, 219, 0.9)';
-            this.ctx.lineWidth = 2.5;
+            this.ctx.strokeStyle = 'rgba(52, 152, 219, 1)';
+            this.ctx.lineWidth = 3;
             this.ctx.stroke();
         });
     }
@@ -227,12 +225,12 @@ class IsometricBoard {
         
         // Glow effect
         this.ctx.shadowColor = '#3498db';
-        this.ctx.shadowBlur = 15;
+        this.ctx.shadowBlur = 20;
         this.ctx.shadowOffsetX = 0;
         this.ctx.shadowOffsetY = 0;
         
         this.ctx.strokeStyle = '#3498db';
-        this.ctx.lineWidth = 3.5;
+        this.ctx.lineWidth = 4;
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
         this.ctx.lineTo(points[1].x, points[1].y);
@@ -243,6 +241,7 @@ class IsometricBoard {
         
         // Reset shadow
         this.ctx.shadowColor = 'transparent';
+        this.ctx.shadowBlur = 0;
     }
 
     /**
@@ -251,7 +250,7 @@ class IsometricBoard {
     drawHoverHighlight(row, col) {
         const points = this.getSquarePoints(row, col);
         
-        this.ctx.fillStyle = 'rgba(52, 152, 219, 0.15)';
+        this.ctx.fillStyle = 'rgba(52, 152, 219, 0.2)';
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
         this.ctx.lineTo(points[1].x, points[1].y);
@@ -303,14 +302,14 @@ class IsometricBoard {
      */
     resize() {
         const rect = this.canvas.parentElement.getBoundingClientRect();
-        const maxWidth = Math.min(700, rect.width - 30);
-        const maxHeight = Math.min(700, rect.height - 30);
+        const maxWidth = Math.min(900, rect.width - 20);
+        const maxHeight = Math.min(900, rect.height - 20);
         
         this.canvas.width = maxWidth;
         this.canvas.height = maxHeight;
         
         this.boardOriginX = this.canvas.width / 2;
-        this.boardOriginY = this.canvas.height / 2 + 40;
+        this.boardOriginY = this.canvas.height / 2 + 60;
     }
 
     /**
