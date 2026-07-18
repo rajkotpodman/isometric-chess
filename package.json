@@ -1,0 +1,15 @@
+{
+  "name": "isometric-chess",
+  "version": "1.0.0",
+  "description": "A modern isometric chess game built with vanilla JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p $PORT"
+  },
+  "keywords": ["chess", "game", "isometric", "javascript"],
+  "author": "rajkotpodman",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
