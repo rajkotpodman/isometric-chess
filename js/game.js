@@ -271,11 +271,10 @@ class ChessGame {
         return this.moveHistory.map((move, index) => {
             const moveNumber = Math.floor(index / 2) + 1;
             const isWhiteMove = index % 2 === 0;
-            const prefix = isWhiteMove ? `${moveNumber}.` : '';
             return {
                 moveNumber,
-                notation: move.notation,
-                displayText: `${prefix} ${move.notation}`
+                isWhiteMove,
+                notation: move.notation
             };
         });
     }

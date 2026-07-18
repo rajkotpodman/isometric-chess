@@ -4,37 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Isometric Chess</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>♟️ Isometric Chess</h1>
+    <div class="app">
+        <header class="app-header">
+            <div class="brand">
+                <span class="brand-mark">♟</span>
+                <div>
+                    <h1>Isometric Chess</h1>
+                    <p class="subtitle">A modern 3D board, played in your browser</p>
+                </div>
+            </div>
             <div class="controls">
-                <button id="newGameBtn">New Game</button>
-                <button id="resetViewBtn">Reset View</button>
-                <span id="gameStatus">Loading...</span>
+                <button id="newGameBtn" class="btn btn-primary">New Game</button>
+                <button id="resetViewBtn" class="btn btn-ghost">Reset View</button>
             </div>
         </header>
 
-        <main>
-            <div class="game-wrapper">
+        <main class="layout">
+            <section class="board-stage">
                 <canvas id="gameCanvas"></canvas>
-                <div class="info-panel">
-                    <div class="turn-info">
-                        <h3>Turn</h3>
-                        <p id="currentPlayer">White</p>
-                    </div>
-                    <div class="move-history">
-                        <h3>Move History</h3>
-                        <ul id="moveList"></ul>
+                <div id="statusBanner" class="status-banner">Loading…</div>
+            </section>
+
+            <aside class="side-panel">
+                <div class="card turn-card">
+                    <span class="card-label">Turn</span>
+                    <div class="turn-row">
+                        <span id="turnIndicator" class="turn-chip white">White</span>
+                        <span id="currentPlayer" class="turn-name">White</span>
                     </div>
                 </div>
-            </div>
+
+                <div class="card status-card">
+                    <span class="card-label">Status</span>
+                    <p id="gameStatus" class="status-text">White's turn</p>
+                </div>
+
+                <div class="card history-card">
+                    <span class="card-label">Move History</span>
+                    <ol id="moveList" class="move-list"></ol>
+                </div>
+            </aside>
         </main>
 
-        <footer>
-            <p>Use mouse to select and move pieces. Right-click to deselect.</p>
+        <footer class="app-footer">
+            <span>Click a piece to select · Click a highlighted square to move · Right-click to deselect</span>
         </footer>
     </div>
 
