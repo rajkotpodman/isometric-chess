@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isometric Chess</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">&#9822;</div>
+                <div class="brand-text">
+                    <span class="brand-title">Isometric Chess</span>
+                    <span class="brand-sub">3D board · two player</span>
+                </div>
+            </div>
+            <button id="newGameBtn" class="btn btn-primary">New Game</button>
+        </header>
+
+        <div class="body">
+            <div class="board-wrap">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+            <aside class="sidebar">
+                <div class="panel turn-panel">
+                    <div class="panel-label">Current Turn</div>
+                    <div class="turn-display">
+                        <div id="turnDot" class="turn-dot white"></div>
+                        <div id="turnName" class="turn-text">White</div>
+                    </div>
+                </div>
+                <div class="panel status-panel" id="statusPanel">
+                    <div class="panel-label">Status</div>
+                    <div id="statusText" class="status-text">White's turn</div>
+                </div>
+                <div class="panel history-panel">
+                    <div class="panel-label">Move History</div>
+                    <div class="history-scroll">
+                        <div id="noMoves" class="no-moves">No moves yet</div>
+                        <table id="moveTable" class="move-table"><tbody></tbody></table>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="footer">
+            Click a piece to select &nbsp;·&nbsp; Click a highlighted square to move &nbsp;·&nbsp; Right-click to deselect
+        </footer>
+    </div>
+
+    <script src="js/pieces.js"></script>
+    <script src="js/board.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
